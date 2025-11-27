@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Banana Split Workflow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.4rem;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #fcd34d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #8892b0;
+            font-size: 1.1rem;
+        }
+        .requirements {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+        .req-badge {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .req-badge.gemini {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            color: #a78bfa;
+        }
+        .req-badge.banana {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: #fbbf24;
+        }
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            background: rgba(255,255,255,0.03);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.3s ease;
+        }
+        .step:hover {
+            transform: translateX(8px);
+        }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .step-1 .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .step-2 .step-number {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a1a2e;
+        }
+        .step-content h3 {
+            color: #e6f1ff;
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+        .step-content p {
+            color: #8892b0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .tool-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        .tool-badge.gemini {
+            background: rgba(102, 126, 234, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        .tool-badge.banana {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .arrow {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.5rem;
+            margin: -10px 0;
+        }
+        .code-block {
+            background: rgba(0,0,0,0.3);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #a8b2d1;
+            border-left: 3px solid #fbbf24;
+        }
+        .session-badge {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 12px;
+        }
+        .note {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-top: 25px;
+            text-align: center;
+        }
+        .note p {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+        
+        /* Example Section */
+        .example-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(251, 191, 36, 0.3);
+        }
+        .example-section h2 {
+            text-align: center;
+            color: #e6f1ff;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+        }
+        .example-section h2 span {
+            color: #fbbf24;
+        }
+        .transformation {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .transformation-item {
+            flex: 1;
+            min-width: 280px;
+            max-width: 380px;
+        }
+        .transformation-item h4 {
+            color: #8892b0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .transformation-item h4 span {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .video-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .video-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .video-info {
+            padding: 12px 15px;
+        }
+        .video-info .title {
+            color: #e6f1ff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .video-info .channel {
+            color: #8892b0;
+            font-size: 0.8rem;
+        }
+        .video-info .link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #4facfe;
+            font-size: 0.75rem;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .video-info .link:hover {
+            color: #fbbf24;
+        }
+        .result-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .result-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .transformation-arrow {
+            font-size: 2.5rem;
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+            .transformation-arrow {
+                transform: rotate(90deg);
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .footer p {
+            color: #5a6a8a;
+            font-size: 0.9rem;
+        }
+        .credits {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+        }
+        .credits p {
+            color: #5a6a8a;
+            font-size: 0.8rem;
+            line-height: 1.8;
+        }
+        .credits a {
+            color: #4facfe;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .credits a:hover {
+            color: #fbbf24;
+            text-decoration: underline;
+        }
+        .credits .made-with {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-top: 10px;
+        }
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍌 The Banana Split Workflow</h1>
+            <p>Transform any YouTube video into a professional infographic</p>
+        </div>
+        
+        <div class="requirements">
+            <div class="req-badge gemini">🤖 Google Gemini 3 Pro</div>
+            <div class="req-badge banana">🍌 Nano Banana Pro</div>
+        </div>
+        
+        <div class="steps">
+            <div class="step step-1">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3><span class="emoji">📺</span>Analyze the Video</h3>
+                    <p>Open <strong>Google Gemini 3 Pro</strong> and paste your YouTube URL. Ask it to analyze and summarize the key concepts.</p>
+                    <span class="tool-badge gemini">Google Gemini 3 Pro</span>
+                    <div class="code-block">
+                        "Analyze this video: https://youtu.be/your-video-id"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="step step-2">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3><span class="emoji">🍌</span>Generate the Infographic</h3>
+                    <p>In the same session, after receiving the analysis, activate <strong>Nano Banana Pro</strong> and use this prompt:</p>
+                    <span class="tool-badge banana">Nano Banana Pro</span>
+                    <div class="code-block">
+                        "Generate an image of an infographic explaining the concept presented in the video"
+                    </div>
+                    <div class="session-badge">💬 Same session — context is preserved</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <p>✨ No copy-paste needed — the AI retains the video context in the same conversation</p>
+        </div>
+        
+        <!-- Example Section -->
+        <div class="example-section">
+            <h2>📌 <span>Real Example</span></h2>
+            
+            <div class="transformation">
+                <div class="transformation-item">
+                    <h4><span>📺 Input: YouTube Video</span></h4>
+                    <div class="video-card">
+                        <img src="https://img.youtube.com/vi/mSQaqFoQg2I/maxresdefault.jpg" alt="YouTube Video Thumbnail">
+                        <div class="video-info">
+                            <div class="title">Civic Change: A Marathon, Not a Sprint</div>
+                            <div class="channel">Lessons from Romania's "Corruption Kills" Movement</div>
+                            <a href="https://www.youtube.com/watch?v=mSQaqFoQg2I" target="_blank" class="link">youtube.com/watch?v=mSQaqFoQg2I</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="transformation-arrow">→</div>
+                
+                <div class="transformation-item">
+                    <h4><span>🍌 Output: Infographic</span></h4>
+                    <div class="result-card">
+                        <img src="example-infographic.png" alt="Generated Infographic">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🔗 Requires <strong>Gemini 3 Pro</strong> + <strong>Nano Banana Pro</strong></p>
+        </div>
+        
+        <div class="credits">
+            <p>
+                <strong>Method naming:</strong> <a href="https://www.linkedin.com/in/baditaflorin/" target="_blank">Florin Badita</a> & Gemini 3 Pro
+            </p>
+            <p>
+                <strong>Original post:</strong> <a href="https://www.linkedin.com/in/gethackteam/" target="_blank">Roy Derks</a>
+            </p>
+            <p class="made-with">
+                Website generated using Claude AI
+            </p>
+        </div>
+    </div>
+</body>
+</html>
